@@ -15,17 +15,17 @@ model Professionals {
   name             String
   email            String          @unique
   password         String
-  phone            String
+  phone            String?
   cpf              String
   avatarUrl        String?
   tokenTemp        String          @unique
-  isEmailConfirmed Boolean         @default(true)
+  isEmailConfirmed Boolean         @default(false)
   createdAt        DateTime        @default(now())
   // is FK to the followings:
   apointments      Appointments[]
   // has the followings as FK:
-  specializationId String
-  specialization   Specializations @relation(fields: [specializationId], references: [id])
+  specializationId String?
+  specialization   Specializations? @relation(fields: [specializationId], references: [id])
 
   @@map("professionals")
 }
@@ -35,20 +35,20 @@ model Users {
   name             String
   email            String         @unique
   password         String
-  phone            String
+  phone            String?
   cpf              String
   avatarUrl        String?
   tokenTemp        String         @unique
-  isEmailConfirmed Boolean        @default(true)
+  isEmailConfirmed Boolean        @default(false)
   createdAt        DateTime       @default(now())
   // is FK to the followings:
   apointments      Appointments[]
   // has the followings as FK:
-  profileId        String
-  profile          Profiles       @relation(fields: [profileId], references: [id])
+  profileId        String?
+  profile          Profiles?       @relation(fields: [profileId], references: [id])
   // military profile
-  prec             String
-  militaryId       String
+  prec             String?
+  militaryId       String?
 
   @@map("users")
 }
