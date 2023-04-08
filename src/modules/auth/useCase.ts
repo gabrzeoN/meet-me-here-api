@@ -59,7 +59,8 @@ export async function signUpUser(newUser: model.SignUpModel) {
   const encryptedPassword = encryptPassword(newUser.password);
   const tokenTemp = email.sendAccConfirmationEmail(newUser.email, newUser.name);
   await repository.insertSignUp("users", { ...newUser, password: encryptedPassword, tokenTemp });
-  return 0;
+  const { token } = await signInUser({ email: newUser.email, password: newUser.password });
+  return { token };
 }
 
 export async function signUpProfessional(newProfessional: model.SignUpModel) {
@@ -67,7 +68,8 @@ export async function signUpProfessional(newProfessional: model.SignUpModel) {
   const encryptedPassword = encryptPassword(newProfessional.password);
   const tokenTemp = email.sendAccConfirmationEmail(newProfessional.email, newProfessional.name);
   await repository.insertSignUp("professionals", { ...newProfessional, password: encryptedPassword, tokenTemp });
-  return 0;
+  const { token } = await signInProfessional({ email: newProfessional.email, password: newProfessional.password });
+  return { token };
 }
 
 export async function signInUser(input: model.SignInModel) {

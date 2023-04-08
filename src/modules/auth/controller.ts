@@ -4,8 +4,8 @@ import * as useCase from "./useCase.js";
 
 export async function signUpUser(req: Request, res: Response) {
   const body: model.SignUpModel = req.body;
-  await useCase.signUpUser(body);
-  return res.sendStatus(201);
+  const result = await useCase.signUpUser(body);
+  return res.status(201).send(result);
 }
 
 export async function signInUser(req: Request, res: Response) {
@@ -29,8 +29,8 @@ export async function forgotUserPassword(req: Request, res: Response) {
 
 export async function signUpProfessional(req: Request, res: Response) {
   const body: model.SignUpModel = req.body;
-  await useCase.signUpProfessional(body);
-  return res.sendStatus(201);
+  const result = await useCase.signUpProfessional(body);
+  return res.status(201).send(result);
 }
 
 export async function signInProfessional(req: Request, res: Response) {
