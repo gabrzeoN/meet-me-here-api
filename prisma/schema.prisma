@@ -11,16 +11,16 @@ datasource db {
 }
 
 model Professionals {
-  id               String          @id @default(uuid())
+  id               String           @id @default(uuid())
   name             String
-  email            String          @unique
+  email            String           @unique
   password         String
   phone            String?
   cpf              String
   avatarUrl        String?
-  tokenTemp        String          @unique
-  isEmailConfirmed Boolean         @default(false)
-  createdAt        DateTime        @default(now())
+  tokenTemp        String           @unique
+  isEmailConfirmed Boolean          @default(false)
+  createdAt        DateTime         @default(now())
   // is FK to the followings:
   apointments      Appointments[]
   // has the followings as FK:
@@ -32,6 +32,7 @@ model Professionals {
 
 model Users {
   id               String         @id @default(uuid())
+  publicId         String         @default(uuid())
   name             String
   email            String         @unique
   password         String
@@ -45,7 +46,7 @@ model Users {
   apointments      Appointments[]
   // has the followings as FK:
   profileId        String?
-  profile          Profiles?       @relation(fields: [profileId], references: [id])
+  profile          Profiles?      @relation(fields: [profileId], references: [id])
   // military profile
   prec             String?
   militaryId       String?
