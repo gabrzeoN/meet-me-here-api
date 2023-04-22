@@ -8,8 +8,10 @@ RUN npm install
 
 COPY ./ ./
 
-# RUN npx prisma migrate dev
+RUN npm install -g dotenv-cli
+
+# RUN dotenv -e .env.dev -- npx prisma migrate dev
 
 EXPOSE 4000
 
-CMD [ "npm", "run", "dev" ]
+# CMD [ "npm", "run", "dev" ]
