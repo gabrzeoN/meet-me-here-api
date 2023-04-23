@@ -7,7 +7,7 @@ import * as err from "../../utils/errorUtil.js";
 import * as model from "./model.js";
 import email from "./helpers.js";
 
-export async function mustNotExistByEmail(table: string, email: string) {
+async function mustNotExistByEmail(table: string, email: string) {
   const user = await repository.getByEmail(table, email);
   if (user) {
     throw err.conflictError("This email is already registered!");
@@ -15,7 +15,7 @@ export async function mustNotExistByEmail(table: string, email: string) {
   return user;
 }
 
-export async function mustExistByEmail(table: string, email: string) {
+async function mustExistByEmail(table: string, email: string) {
   const user = await repository.getByEmail(table, email);
   if (!user) {
     throw err.conflictError("Incorrect email or password!");
@@ -23,17 +23,17 @@ export async function mustExistByEmail(table: string, email: string) {
   return user;
 }
 
-export function encryptPassword(password: string) {
+function encryptPassword(password: string) {
   const encryptedPassword = bcrypt.hashSync(password, saltUtil.bcrypt);
   return encryptedPassword;
 }
 
-function emailPasswordMustMatch(inputPassword: string, userPassword: string) {
+async function emailPasswordMustMatch(inputPassword: string, userPassword: string) {
   const correctPassword = bcrypt.compareSync(inputPassword, userPassword);
   if (!correctPassword) {
     throw err.unauthorizedError("Incorrect email or password!");
   }
-  return;
+  return 0;
 }
 
 function genJwtPayload(userType: string, user: Users | Professionals){
@@ -54,7 +54,7 @@ function generateJwtToken(payload: any) {
 
 //  ------------------  Routed functions  ----------------------------------------------------
 
-export async function signUpUser(newUser: model.SignUpModel) {
+async function signUpUser(newUser: model.SignUpModel) {
   await mustNotExistByEmail("users", newUser.email);
   const encryptedPassword = encryptPassword(newUser.password);
   const tokenTemp = email.sendAccConfirmationEmail(newUser.email, newUser.name);
@@ -63,7 +63,7 @@ export async function signUpUser(newUser: model.SignUpModel) {
   return { token };
 }
 
-export async function signUpProfessional(newProfessional: model.SignUpModel) {
+async function signUpProfessional(newProfessional: model.SignUpModel) {
   await mustNotExistByEmail("professionals", newProfessional.email);
   const encryptedPassword = encryptPassword(newProfessional.password);
   const tokenTemp = email.sendAccConfirmationEmail(newProfessional.email, newProfessional.name);
@@ -72,17 +72,17 @@ export async function signUpProfessional(newProfessional: model.SignUpModel) {
   return { token };
 }
 
-export async function signInUser(input: model.SignInModel) {
+async function signInUser(input: model.SignInModel) {
   const user = await mustExistByEmail("users", input.email);
-  emailPasswordMustMatch(input.password, user.password);
+  await emailPasswordMustMatch(input.password, user.password);
   const jwtPayload = genJwtPayload("user", user);
   const token = generateJwtToken(jwtPayload);
   return { token };
 }
 
-export async function signInProfessional(input: model.SignInModel) {
+async function signInProfessional(input: model.SignInModel) {
   const professional = await mustExistByEmail("professionals", input.email);
-  emailPasswordMustMatch(input.password, professional.password);
+  await emailPasswordMustMatch(input.password, professional.password);
   const jwtPayload = genJwtPayload("professional", professional);
   const token = generateJwtToken(jwtPayload);
   return { token };
@@ -117,3 +117,20 @@ export async function signInProfessional(input: model.SignInModel) {
 //   await adminsRepository.updateTokenTempById(admin.id, newTokenTemp);
 //   return 0;
 // }
+
+const useCase = {
+  mustNotExistByEmail,
+  mustExistByEmail,
+  encryptPassword,
+  emailPasswordMustMatch,
+  genJwtPayload,
+  generateJwtToken,
+
+  signUpUser,
+  signUpProfessional,
+  signInUser,
+  signInProfessional
+
+};
+
+export default useCase;

@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import * as model from "./model.js";
-import * as useCase from "./useCase.js";
+import useCase from "./useCase.js";
 
 export async function signUpUser(req: Request, res: Response) {
   const body: model.SignUpModel = req.body;
