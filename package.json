@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "test-docker": "nodemon src/testDocker.ts",
-    "test:units:localhost": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.dev jest -- -i --coverage --testPathPattern=tests/units --collectCoverageFrom=src/modules/**/useCase.*",
+    
+    "test:unit:localhost": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/units --collectCoverageFrom=src/modules/**/useCase.*",
+    "test:unit:docker-compose-up": "docker compose --file ./docker-compose.test.yml --env-file ./.env.test up --build --abort-on-container-exit --exit-code-from test-meet-me-here-api",
+    
     "dev:localhost": "nodemon src/server.ts",
     "dev:docker-compose-up": "docker compose --file ./docker-compose.dev.yml --env-file ./.env.dev up --build",
     "dev:docker-compose-down": "docker compose --file ./docker-compose.dev.yml --env-file ./.env.dev down"
